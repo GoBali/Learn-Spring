@@ -34,7 +34,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	// OpenAPI 문서화: 최신 호환 버전
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
 	// 기타 의존성 유지
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
