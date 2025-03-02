@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+#  app: # Spring Boot Application 서비스
+#    image: openjdk:21-jdk-slim
+#    container_name: springboot-app
+#    working_dir: /app
+#    volumes:
+#      - ./build/libs:/app
+#    command: ["java", "-jar", "0.0.1-SNAPSHOT.jar"]
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      SPRING_PROFILES_ACTIVE: dev # Spring의 활성 프로파일
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://springboot-db:5432/learn-spring
+#      SPRING_DATASOURCE_USERNAME: user
+#      SPRING_DATASOURCE_PASSWORD: password
+#    depends_on:
+#      - database # Database
+#    networks:
+#      - spring-network
+
+  database:
+    image: postgres:15
+    container_name: springboot-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: learn-spring
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d learn-spring" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - spring-network
+
+  tracer:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin-tracer
+    ports:
+      - "9411:9411"
+    networks:
+      - spring-network
+    environment:
+      - STORAGE_TYPE=mem
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:9411/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+networks:
+  spring-network:
+    driver: bridge
