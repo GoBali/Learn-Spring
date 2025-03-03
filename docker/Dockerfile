@@ -3,7 +3,7 @@ FROM gradle:8.12.1-jdk21 AS builder
 WORKDIR /app
 
 # 2. 프로젝트 소스를 도커 이미지로 복사
-COPY . .
+COPY .. .
 
 # 3. Gradle 빌드 실행 (JAR 생성)
 RUN gradle clean build --no-daemon
