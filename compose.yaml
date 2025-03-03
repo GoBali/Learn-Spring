@@ -60,9 +60,11 @@ services:
     container_name: envoy-proxy
     volumes:
       - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./envoy/certs:/etc/envoy/certs
     ports:
       - "9901:9901" # Envoy Admin Port
-      - "8088:8088" # Envoy Proxy 접속 포트
+      - "8443:8443" # Envoy Proxy 접속 포트
+      - "8088:8088" # HTTP -> HTTPS
     networks:
       - spring-network
 

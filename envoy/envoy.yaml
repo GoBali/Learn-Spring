@@ -4,9 +4,9 @@ admin:
 
 static_resources:
   listeners:
-    - name: listener_0
+    - name: https_listener
       address:
-        socket_address: { address: 0.0.0.0, port_value: 8088 }
+        socket_address: { address: 0.0.0.0, port_value: 8443 }
       filter_chains:
         - filters:
             - name: envoy.filters.network.http_connection_manager
@@ -15,9 +15,9 @@ static_resources:
                 stat_prefix: ingress_http
                 codec_type: AUTO
                 route_config:
-                  name: local_route
+                  name: https_route
                   virtual_hosts:
-                    - name: local_service
+                    - name: https_service
                       domains: ["*"]
                       routes:
                         - match: { prefix: "/" }
@@ -26,6 +26,40 @@ static_resources:
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+          transport_socket:
+            name: envoy.transport_sockets.tls
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+              common_tls_context:
+                tls_certificates:
+                  - certificate_chain: { filename: "/etc/envoy/certs/fullchain.pem" } # 인증서 경로
+                    private_key: { filename: "/etc/envoy/certs/privkey.pem" }        # 개인 키 경로
+
+    - name: http_listener
+      address:
+        socket_address: { address: 0.0.0.0, port_value: 8088 } # HTTP 포트
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: ingress_http
+                codec_type: AUTO
+                route_config:
+                  name: http_to_https_route
+                  virtual_hosts:
+                    - name: http_redirect_service
+                      domains: [ "*" ]
+                      routes:
+                        - match: { prefix: "/" }
+                          redirect: # 리다이렉트 설정
+                            https_redirect: true # HTTP -> HTTPS로 리다이렉트
+                            port_redirect: 8443 # HTTPS 리스너 포트로 리다이렉트
+                http_filters:
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
   clusters:
     - name: springboot_service
       connect_timeout: 0.25s
