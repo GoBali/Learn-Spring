@@ -48,7 +48,9 @@ services:
     networks:
       - spring-network
     environment:
-      - STORAGE_TYPE=mem
+      - STORAGE_TYPE=disk
+    volumes:
+      - zipkin_data:/data # 데이터 저장소 바인딩
     healthcheck:
       test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:9411/health" ]
       interval: 10s
@@ -57,6 +59,7 @@ services:
 
 volumes:
   postgres_data:
+  zipkin_data:
 
 networks:
   spring-network:
