@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: learn-spring
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:postgresql://springboot-db:5432/learn-spring
+    username: user
+    password: password
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      pool-name: LearnSpringHikariCP
+      maximum-pool-size: 10
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    open-in-view: false
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+
+  security:
+    user:
+      name: admin
+      password: admin
+
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:localhost.p12
+    key-store-password: changeit
+    key-store-type: PKCS12
+
+logging:
+  level:
+    com.zaxxer.hikari: DEBUG
+    org.springframework.cache: DEBUG
+
+jasypt:
+  encryptor:
+    password: learn-spring-encryption-key
+    algorithm: PBEWithHMACSHA512AndAES_256
+    iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+    enabled: true
+
+  zipkin:
+    tracing:
+      endpoint: http://zipkin-tracer:9411/api/v2/spans
+
+encryption:
+  key: learn-spring-secure-data
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+#spring:
+#  liquibase:
+#    enabled: true
+#    change-log: classpath:/db/changelog/db.changelog-master.yaml
