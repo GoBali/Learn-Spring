@@ -5,12 +5,16 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor
 import org.example.learnspring.repository.UserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import mu.KotlinLogging
+
 
 @Service
 class SecureUserService(
     private val userRepository: UserRepository,
     private val meterRegistry: MeterRegistry
 ) {
+    private val logger = KotlinLogging.logger {}
+
     @Value("\${encryption.key}")
     private lateinit var encryptionKey: String
 
@@ -31,10 +35,16 @@ class SecureUserService(
         return timer.recordCallable {
             val user = userRepository.findById(id).orElseThrow {
                 meterRegistry.counter(ERROR_COUNTER_NAME).increment()
-                throw UserNotFoundException("User with ID $id not found")
+                val message = "User with ID $id not found"
+                logger.error(message)
+                throw UserNotFoundException(message)
             }
             textEncryptor.encrypt(user.toString())
-        } ?: throw IllegalStateException("Timer did not return a value")
+        } ?: run {
+            val message = "Timer did not return a value"
+            logger.error(message)
+            throw IllegalStateException(message)
+        }
     }
 }
 

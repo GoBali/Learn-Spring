@@ -49,6 +49,7 @@ dependencies {
 	// 메트릭/모니터링
 	implementation("io.micrometer:micrometer-core")
 	implementation("io.micrometer:micrometer-registry-prometheus")
+	implementation("io.github.microutils:kotlin-logging:1.12.5")
 
 	// 런타임 및 DB
 	runtimeOnly("com.h2database:h2")

@@ -4,6 +4,7 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
+
 @Service
 class EncryptionService {
     @Value("\${encryption.key}")
