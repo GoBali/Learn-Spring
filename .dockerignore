@@ -1,0 +1,12 @@
+.git
+.github
+.gradle
+.idea
+*.iml
+*.log
+build/
+!build/libs/*.jar
+out/
+logs/
+node_modules/
+.DS_Store

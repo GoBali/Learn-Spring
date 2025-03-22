@@ -1,6 +1,29 @@
 version: '3.8'
 
 services:
+  app:
+    image: ${APP_IMAGE:-openjdk:21-jdk-slim}
+    container_name: springboot-app
+    restart: "no"
+    working_dir: /app
+    volumes:
+      - ./build/libs:/app # JAR 파일 마운트
+      - ./src:/src # 소스 코드 마운트 (핫 리로드를 위한 설정)
+      - ~/.m2:/root/.m2 # 로컬 .m2 캐시 마운트
+    command: ["java", "-jar", "learn-spring-0.0.1-SNAPSHOT.jar"]
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://springboot-db:5432/learn-spring
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      JAVA_OPTS: "-XX:+UseContainerSupport -Xms256m -Xmx512m"
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_OUTPUT_ANSI_ENABLED: "always"
+    depends_on:
+      - database
+    networks:
+      - spring-network
+
   database:
     image: postgres:15
     container_name: springboot-db
@@ -46,7 +69,7 @@ services:
       - ./envoy/certs:/etc/envoy/certs
     ports:
       - "9901:9901" # Envoy Admin Port
-      - "9443:8443" # Envoy Proxy 접속 포트
+      - "8443:8443" # Envoy Proxy 접속 포트
       - "8088:8088" # HTTP -> HTTPS
     networks:
       - spring-network

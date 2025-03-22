@@ -3,17 +3,22 @@ spring:
     name: learn-spring
   profiles:
     active: dev
-
   datasource:
-    url: jdbc:postgresql://springboot-db:5432/learn-spring
-    username: user
-    password: password
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://springboot-db:5432/learn-spring}
+    username: ${SPRING_DATASOURCE_USERNAME:user}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
     hikari:
-      connection-timeout: 30000
-      pool-name: LearnSpringHikariCP
-      maximum-pool-size: 10
+      connection-timeout: 30000       # 30초 (기본값과 동일)
+      pool-name: LearnSpringHikariCP  # 기존 설정 유지
+      maximum-pool-size: 10          # 기존 설정 유지
+      minimum-idle: 5                # 최소 유휴 연결 수 설정
+      idle-timeout: 600000          # 10분 (유휴 연결 제거 시간)
+      max-lifetime: 1800000        # 30분 (연결 최대 수명)
+      auto-commit: true            # 자동 커밋 설정
+      connection-test-query: SELECT 1  # 연결 유효성 검사 쿼리
+      leak-detection-threshold: 60000  # 1분 (연결 누수 탐지 임계값)
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
