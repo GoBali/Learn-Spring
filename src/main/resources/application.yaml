@@ -55,6 +55,10 @@ jasypt:
     algorithm: PBEWithHMACSHA512AndAES_256
     iv-generator-classname: org.jasypt.iv.RandomIvGenerator
 
+jwt:
+  secret: =a2V5X3ZhbHVlX3RoYXRfaXNfYXRfbGVhc3RfMjU2X2JpdHNfbG9uZ19mb3JfaHMyNTZfYWxnb3JpdGht
+  expiration: 3600000
+
 management:
   tracing:
     sampling:

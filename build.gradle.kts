@@ -34,7 +34,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	// OpenAPI 문서화: 최신 호환 버전
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
 
 	// 기타 의존성 유지
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -45,6 +45,9 @@ dependencies {
 	// 보안 및 암호화 업데이트
 	implementation("org.jasypt:jasypt:1.9.3")
 	implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5") // 최신 안정 버전
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
 	// 메트릭/모니터링
 	implementation("io.micrometer:micrometer-core")
