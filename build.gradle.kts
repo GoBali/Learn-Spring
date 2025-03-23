@@ -34,7 +34,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	// OpenAPI 문서화: 최신 호환 버전
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.7.0")
 
 	// 기타 의존성 유지
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -53,6 +54,10 @@ dependencies {
 	implementation("io.micrometer:micrometer-core")
 	implementation("io.micrometer:micrometer-registry-prometheus")
 	implementation("io.github.microutils:kotlin-logging:1.12.5")
+
+	// Thymeleaf 의존성
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6") // Spring Security와 통합
 
 	// 런타임 및 DB
 	runtimeOnly("com.h2database:h2")

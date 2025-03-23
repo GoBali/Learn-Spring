@@ -18,7 +18,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       JAVA_OPTS: "-XX:+UseContainerSupport -Xms256m -Xmx512m"
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
-      SPRING_OUTPUT_ANSI_ENABLED: "always"
     depends_on:
       - database
     networks:
@@ -27,7 +26,7 @@ services:
   database:
     image: postgres:15
     container_name: springboot-db
-    restart: always
+    restart: "always"
     ports:
       - "5432:5432"
     environment:

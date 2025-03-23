@@ -1,10 +1,22 @@
 spring:
+  thymeleaf:
+    cache: false  # 개발 환경에서는 캐시 비활성화
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+  docker:
+    compose:
+      enabled: false
+  output:
+    ansi:
+      enabled: never
   application:
     name: learn-spring
   profiles:
     active: dev
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://springboot-db:5432/learn-spring}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/learn-spring}
     username: ${SPRING_DATASOURCE_USERNAME:user}
     password: ${SPRING_DATASOURCE_PASSWORD:password}
     type: com.zaxxer.hikari.HikariDataSource
@@ -21,7 +33,6 @@ spring:
       leak-detection-threshold: 60000  # 1분 (연결 누수 탐지 임계값)
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
       naming:
@@ -75,7 +86,7 @@ encryption:
 springdoc:
   api-docs:
     enabled: true
-    path: /v3/api-docs
+    path: /api-docs
 
   swagger-ui:
     enabled: true

@@ -12,10 +12,14 @@ class JwtAuthorizationFilter(
 
     private fun resolveToken(request: HttpServletRequest): String? {
         val bearerToken = request.getHeader("Authorization")
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7)
-        }
-        return null
+        return if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            bearerToken.substring(7)
+        } else null
+    }
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        // 로그인 요청은 이 필터에서 처리하지 않음
+        return request.requestURI == "/api/auth/login" && request.method == "POST"
     }
 
     override fun doFilterInternal(
@@ -23,14 +27,21 @@ class JwtAuthorizationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token = resolveToken(request)
+        try {
+            val token = resolveToken(request)
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            val auth = jwtTokenProvider.getAuthentication(token)
-            SecurityContextHolder.getContext().authentication = auth
+            if (token != null && jwtTokenProvider.validateToken(token)) {
+                val auth = jwtTokenProvider.getAuthentication(token)
+                SecurityContextHolder.getContext().authentication = auth
+            }
+
+            filterChain.doFilter(request, response)
+        } catch (e: Exception) {
+            // 토큰 처리 중 예외 발생 시 로깅하고 인증 정보 제거
+            SecurityContextHolder.clearContext()
+            response.status = HttpServletResponse.SC_UNAUTHORIZED
+            response.writer.write("{\"error\":\"Invalid token: ${e.message}\"}")
+            // 오류 응답을 생성했으므로 필터 체인을 계속하지 않음
         }
-
-        filterChain.doFilter(request, response)
     }
-
 }

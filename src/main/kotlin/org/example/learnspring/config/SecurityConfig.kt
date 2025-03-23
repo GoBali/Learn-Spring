@@ -1,6 +1,5 @@
 package org.example.learnspring.config
 
-import org.example.learnspring.security.JwtAuthenticationFilter
 import org.example.learnspring.security.JwtAuthorizationFilter
 import org.example.learnspring.security.JwtTokenProvider
 import org.springframework.context.annotation.Bean
@@ -36,10 +35,12 @@ class SecurityConfig(
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(
-                        "/swagger-ui/**",   // Swagger UI 관련 허용
-                        "/v3/api-docs/**",  // OpenAPI 문서 관련 허용
+                        "/swagger-ui/**", "/swagger-ui.html",   // Swagger UI 관련 허용
+                        "/api-docs/**",  // OpenAPI 문서 관련 허용
                         "/swagger-resources/**",  // Swagger 리소스 허용
-                        "/api/auth/**"      // 인증 관련 API (로그인, 회원가입 등)
+                        "/api/auth/**", "/login", "/api/auth/login", "/css/**", "/js/**", // 인증 관련 API (로그인, 회원가입 등)
+                        "/webjars/swagger-ui/**",
+                        "/webjars/**"
                     ).permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS preflight 요청 허용
                     .anyRequest().authenticated() // 나머지 요청은 인증 필요
@@ -48,14 +49,9 @@ class SecurityConfig(
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-            // 폼 로그인 비활성화 (JWT 인증 사용)
-            .formLogin { formLogin ->
-                formLogin.disable()
-            }
             // 기본 HTTP 인증 비활성화 (JWT 인증 사용)
-            .httpBasic { httpBasic ->
-                httpBasic.disable()
-            }
+            .httpBasic { it.disable() }
+            .formLogin { it.disable() }
             // 로그아웃 설정
             .logout { logout ->
                 logout
@@ -101,10 +97,14 @@ class SecurityConfig(
             // 예외 처리
             .exceptionHandling { exceptions ->
                 exceptions
-                    .authenticationEntryPoint { _, response, _ ->
-                        response.status = 401
-                        response.contentType = "application/json"
-                        response.writer.write("{\"error\":\"인증되지 않은 사용자입니다.\"}")
+                    .authenticationEntryPoint { request, response, _ ->
+                        if (request.requestURI.startsWith("/api/")) {
+                            response.status = 401
+                            response.contentType = "application/json"
+                            response.writer.write("{\"error\":\"인증되지 않은 사용자입니다.\"}")
+                        } else {
+                            response.sendRedirect("/login")
+                        }
                     }
                     .accessDeniedHandler { _, response, _ ->
                         response.status = 403
