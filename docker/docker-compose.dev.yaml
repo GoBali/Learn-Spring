@@ -7,13 +7,13 @@ services:
     restart: "no"
     working_dir: /app
     volumes:
-      - ./build/libs:/app # JAR 파일 마운트
-      - ./src:/src # 소스 코드 마운트 (핫 리로드를 위한 설정)
+      - ../build/libs:/app # JAR 파일 마운트
+      - ../src:/src # 소스 코드 마운트 (핫 리로드를 위한 설정)
       - ~/.m2:/root/.m2 # 로컬 .m2 캐시 마운트
     command: ["java", "-jar", "learn-spring-0.0.1-SNAPSHOT.jar"]
     environment:
       SPRING_PROFILES_ACTIVE: dev
-      SPRING_DATASOURCE_URL: jdbc:postgresql://springboot-db:5432/learn-spring
+      S PRING_DATASOURCE_URL: jdbc:postgresql://springboot-db:5432/learn-spring
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
       JAVA_OPTS: "-XX:+UseContainerSupport -Xms256m -Xmx512m"
@@ -64,8 +64,8 @@ services:
     image: envoyproxy/envoy:v1.27-latest
     container_name: envoy-proxy
     volumes:
-      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
-      - ./envoy/certs:/etc/envoy/certs
+      - ../envoy/envoy.yaml:/etc/envoy/envoy.yaml
+      - ../envoy/certs:/etc/envoy/certs
     ports:
       - "9901:9901" # Envoy Admin Port
       - "8443:8443" # Envoy Proxy 접속 포트
@@ -78,7 +78,7 @@ services:
     container_name: prometheus
     volumes:
       - prometheus_data:/prometheus
-      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
+      - ../prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     networks:
