@@ -2,6 +2,7 @@ package org.example.learnspring.config
 
 import org.example.learnspring.security.JwtAuthorizationFilter
 import org.example.learnspring.security.JwtTokenProvider
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -21,29 +22,16 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
+    @Value("\${spring.security.filter.jwt.enabled:true}")
+    private val jwtEnabled: Boolean = true
+
     @Bean
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        val jwtAuthorizationFilter = JwtAuthorizationFilter(jwtTokenProvider)
-
         http
             // CSRF 설정
             .csrf { csrf ->
                 csrf.disable() // JWT 기반 인증에서는 일반적으로 CSRF 보호를 비활성화합니다
-            }
-            // 요청 인가 설정
-            .authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers(
-                        "/swagger-ui/**", "/swagger-ui.html",   // Swagger UI 관련 허용
-                        "/api-docs/**",  // OpenAPI 문서 관련 허용
-                        "/swagger-resources/**",  // Swagger 리소스 허용
-                        "/api/auth/**", "/login", "/api/auth/login", "/css/**", "/js/**", // 인증 관련 API (로그인, 회원가입 등)
-                        "/webjars/swagger-ui/**",
-                        "/webjars/**"
-                    ).permitAll()
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS preflight 요청 허용
-                    .anyRequest().authenticated() // 나머지 요청은 인증 필요
             }
             // 세션 관리 - JWT 기반 인증에서는 STATELESS
             .sessionManagement { session ->
@@ -94,14 +82,13 @@ class SecurityConfig(
                 requiresChannel
                     .anyRequest().requiresSecure()
             }
-            // 예외 처리
             .exceptionHandling { exceptions ->
                 exceptions
                     .authenticationEntryPoint { request, response, _ ->
                         if (request.requestURI.startsWith("/api/")) {
                             response.status = 401
                             response.contentType = "application/json"
-                            response.writer.write("{\"error\":\"인증되지 않은 사용자입니다.\"}")
+                            response.writer.write("{\"error\":\"Unauthorized\"}")
                         } else {
                             response.sendRedirect("/login")
                         }
@@ -112,8 +99,30 @@ class SecurityConfig(
                         response.writer.write("{\"error\":\"접근 권한이 없습니다.\"}")
                     }
             }
+
+        if (jwtEnabled) {
+            val jwtAuthorizationFilter = JwtAuthorizationFilter(jwtTokenProvider)
+
+            http.authorizeHttpRequests { auth ->
+                    auth
+                        .requestMatchers(
+                            "/swagger-ui/**",
+                            "/swagger-resources/**",  // Swagger 리소스 허용
+                            "/api-docs/**",  // OpenAPI 문서 관련 허용
+                            "/api/auth/**", "/login", // 인증 관련 API (로그인, 회원가입 등)
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS preflight 요청 허용
+                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                }
             // JWT 필터 추가
-            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter::class.java)
+        }
+        else
+        {
+            http.authorizeHttpRequests { auth ->
+                auth.anyRequest().permitAll()
+            }
+        }
 
         return http.build()
     }

@@ -117,13 +117,11 @@
                 throw new Error('로그인 실패');
             })
             .then(data => {
-                // 토큰 저장
                 localStorage.setItem('token', data.token);
+                window.location.href = data.redirectUrl;
 
-                // 리다이렉션
-                window.location.href = '/swagger-ui/index.html';
             })
-            .catch(error => {
+            .catch(_ => {
                 const errorElement = document.querySelector('.error-message');
                 if (!errorElement) {
                     const newErrorElement = document.createElement('div');
@@ -139,10 +137,5 @@
             });
     });
 </script>
-</body>
-</html></title>
-</head>
-<body>
-
 </body>
 </html>

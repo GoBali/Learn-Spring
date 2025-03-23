@@ -1,6 +1,5 @@
 package org.example.learnspring.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.example.learnspring.security.JwtTokenProvider
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -34,7 +33,6 @@ class AuthController {
 @RequestMapping("/api/auth")
 class AuthApiController(
     private val jwtTokenProvider: JwtTokenProvider,
-    private val objectMapper: ObjectMapper,
 ) {
     private fun isValidUser(username: String, password: String): Boolean {
         return true // TODO: DB 검증 필요
@@ -56,7 +54,10 @@ class AuthApiController(
                     )
                 SecurityContextHolder.getContext().authentication = auth
 
-                return ResponseEntity.ok(mapOf("token" to token))
+                return ResponseEntity.ok(mapOf(
+                    "token" to token,
+                    "redirectUrl" to "/swagger-ui/index.html"
+                ))
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mapOf("error" to "Invalid username or password"))
             }
