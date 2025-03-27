@@ -60,6 +60,7 @@ dependencies {
 	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6") // Spring Security와 통합
 
 	// 런타임 및 DB
+	implementation("org.liquibase:liquibase-core")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.postgresql:postgresql")
 

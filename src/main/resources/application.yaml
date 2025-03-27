@@ -12,6 +12,9 @@ spring:
   docker:
     compose:
       enabled: false
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
   output:
     ansi:
       enabled: never
@@ -43,7 +46,7 @@ spring:
         globally_quoted_identifiers: true
   security:
     filter:
-      jwt.enabled: false
+      jwt.enabled: ${SPRING_SECURITY_FILTER_JWT_ENABLED:false}
     user:
       name: admin
       password: admin
@@ -92,8 +95,3 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
-
-#spring:
-#  liquibase:
-#    enabled: true
-#    change-log: classpath:/db/changelog/db.changelog-master.yaml
