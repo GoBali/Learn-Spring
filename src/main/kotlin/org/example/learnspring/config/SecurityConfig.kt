@@ -77,7 +77,6 @@ class SecurityConfig(
                             .maxAgeInSeconds(31536000)
                     }
             }
-            // HTTPS 요구 설정
             .requiresChannel { requiresChannel ->
                 requiresChannel
                     .anyRequest().requiresSecure()
@@ -107,14 +106,13 @@ class SecurityConfig(
                     auth
                         .requestMatchers(
                             "/swagger-ui/**",
-                            "/swagger-resources/**",  // Swagger 리소스 허용
-                            "/api-docs/**",  // OpenAPI 문서 관련 허용
-                            "/api/auth/**", "/login", // 인증 관련 API (로그인, 회원가입 등)
+                            "/swagger-resources/**",
+                            "/api-docs/**",
+                            "/api/auth/**", "/login",
                         ).permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS preflight 요청 허용
-                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyRequest().authenticated()
                 }
-            // JWT 필터 추가
             http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter::class.java)
         }
         else

@@ -15,17 +15,17 @@ class AuthController {
 
     @GetMapping("/login")
     fun loginPage(): String {
-        return "login"  // login.html 템플릿을 반환합니다
+        return "login"
     }
 
     @GetMapping("/")
     fun home(): String {
-        return "redirect:/dashboard"  // 로그인 성공 시 대시보드로 리다이렉트
+        return "redirect:/dashboard"
     }
 
     @GetMapping("/dashboard")
     fun dashboard(): String {
-        return "dashboard"  // dashboard.html 템플릿을 반환합니다
+        return "dashboard"
     }
 }
 
@@ -67,7 +67,6 @@ class AuthApiController(
     }
 }
 
-// 로그인 요청 데이터 클래스
 data class LoginRequest(
     val username: String,
     val password: String
