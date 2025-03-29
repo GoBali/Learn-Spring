@@ -96,6 +96,13 @@ jwt:
 
 # 모니터링 및 추적 설정
 management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info
+  endpoint:
+    prometheus:
+      access: read_only
   tracing:
     sampling:
       probability: 1.0
