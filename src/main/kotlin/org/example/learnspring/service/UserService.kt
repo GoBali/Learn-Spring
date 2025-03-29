@@ -1,7 +1,6 @@
 package org.example.learnspring.service
 
 import mu.KotlinLogging
-import org.example.learnspring.config.SecurityConfig
 import org.example.learnspring.dto.CreateUserRequest
 import org.example.learnspring.dto.DeleteUserRequest
 import org.example.learnspring.dto.UpdateUserRequest
@@ -11,22 +10,23 @@ import org.example.learnspring.repository.UserRepository
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val securityConfig: SecurityConfig
+    private val passwordEncoder: PasswordEncoder,
 ) {
     private val logger = KotlinLogging.logger {}
 
     fun encodePassword(rawPassword: String): String {
-        return securityConfig.passwordEncoder().encode(rawPassword)
+        return passwordEncoder.encode(rawPassword)
     }
 
     fun validatePassword(rawPassword: String, encodedPassword: String): Boolean {
-        return securityConfig.passwordEncoder().matches(rawPassword, encodedPassword)
+        return passwordEncoder.matches(rawPassword, encodedPassword)
     }
 
     @Transactional(readOnly = true)
@@ -62,7 +62,6 @@ class UserService(
         val existingUser = userRepository.findByEmail(email)
             .orElseThrow { RuntimeException("User not found by Email: ${email}") }
 
-        securityConfig.passwordEncoder()
         if (!validatePassword(updateUserRequest.password, existingUser.password)) {
             throw RuntimeException("Password does not match")
         }
