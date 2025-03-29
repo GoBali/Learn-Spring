@@ -1,9 +1,8 @@
 package org.example.learnspring.service
 
 import org.example.learnspring.dto.FileUploadResponseDto
+import org.example.learnspring.exception.FileUploadException
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.util.unit.DataSize
 import org.springframework.web.multipart.MultipartFile
@@ -35,21 +34,18 @@ class FileUploadService(
         }
     }
 
-    fun handleFileUpload(file: MultipartFile): ResponseEntity<FileUploadResponseDto> {
+    fun handleFileUpload(file: MultipartFile): FileUploadResponseDto {
         if (file.isEmpty) {
-            val response = FileUploadResponseDto(false, "File is empty", null)
-            return ResponseEntity.badRequest().body(response)
+            throw FileUploadException("File is empty")
         }
 
         if (file.size > maxFileSize.toBytes()) {
-            val response = FileUploadResponseDto(false, "File size exceeds the limit", null)
-            return ResponseEntity.badRequest().body(response)
+            throw FileUploadException("File size exceeds the limit")
         }
 
         val contentType = file.contentType ?: ""
         if (!allowedTypes.contains(contentType)) {
-            val response = FileUploadResponseDto(false, "File type is not allowed", null)
-            return ResponseEntity.badRequest().body(response)
+            throw FileUploadException("File type is not allowed")
         }
 
         val originalFilename = file.originalFilename ?: "unknown_file"
@@ -60,21 +56,14 @@ class FileUploadService(
             Files.copy(file.inputStream, targetFilePath, StandardCopyOption.REPLACE_EXISTING)
             logger.info("File uploaded successfully: $safeFilename")
 
-            val response = FileUploadResponseDto(
+            return FileUploadResponseDto(
                 success = true,
                 message = "File uploaded successfully",
                 filename = safeFilename
             )
-            return ResponseEntity.ok(response)
         } catch (e: Exception) {
             logger.error("Failed to upload file: $safeFilename", e)
-
-            val response = FileUploadResponseDto(
-                success = false,
-                message = "Failed to upload file: ${e.message}",
-                filename = null
-            )
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response)
+            throw FileUploadException("Failed to upload file: $safeFilename", e)
         }
     }
 

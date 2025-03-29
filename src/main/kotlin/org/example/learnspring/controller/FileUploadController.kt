@@ -14,6 +14,6 @@ import org.springframework.web.multipart.MultipartFile
 class FileUploadController(private val fileUploadService: FileUploadService) {
     @PostMapping("/upload")
     fun handleFileUpload(@RequestParam("file") file: MultipartFile): ResponseEntity<FileUploadResponseDto> {
-        return fileUploadService.handleFileUpload(file)
+        return ResponseEntity.ok(fileUploadService.handleFileUpload(file))
     }
 }

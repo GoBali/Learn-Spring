@@ -1,8 +1,8 @@
 package org.example.learnspring.service
 
 import org.example.learnspring.dto.LoginRequest
+import org.example.learnspring.exception.AuthenticationException
 import org.example.learnspring.security.JwtTokenProvider
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -36,10 +36,10 @@ class AuthService(private val jwtTokenProvider: JwtTokenProvider) {
                     "redirectUrl" to "/swagger-ui/index.html"
                 ))
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mapOf("error" to "Invalid username or password"))
+                throw AuthenticationException("Invalid username or password")
             }
         } catch (e: Exception) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mapOf("error" to "Authentication failed!"))
+            throw AuthenticationException(e.message ?: "Authentication failed!")
         }
     }
 }

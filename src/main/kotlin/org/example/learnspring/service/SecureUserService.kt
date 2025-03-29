@@ -6,6 +6,7 @@ import org.example.learnspring.repository.UserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import mu.KotlinLogging
+import org.example.learnspring.exception.UserNotFoundException
 
 
 @Service
@@ -47,5 +48,3 @@ class SecureUserService(
         }
     }
 }
-
-class UserNotFoundException(message: String) : RuntimeException(message)

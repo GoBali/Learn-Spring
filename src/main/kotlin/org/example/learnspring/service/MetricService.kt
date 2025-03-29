@@ -2,7 +2,7 @@ package org.example.learnspring.service
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 
-class ExampleService {
+class MetricService {
     private val meterRegistry = SimpleMeterRegistry()
 
     fun process() {
