@@ -2,5 +2,10 @@ package org.example.learnspring.repository
 
 import org.example.learnspring.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+import java.util.*
 
-interface UserRepository : JpaRepository<User, Long>
+@Repository
+interface UserRepository : JpaRepository<User, Long> {
+    fun findByEmail(email: String): Optional<User>
+}

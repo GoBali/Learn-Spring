@@ -5,6 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.7"
 	id("com.netflix.dgs.codegen") version "7.0.3"
 	id("org.graalvm.buildtools.native") version "0.10.5"
+	id("org.jetbrains.kotlin.plugin.jpa") version "1.8.0"
 }
 
 group = "org.example"
