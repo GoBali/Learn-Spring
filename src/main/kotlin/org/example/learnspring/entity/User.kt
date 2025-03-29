@@ -23,5 +23,7 @@ data class User(
 
     @field:NotBlank(message = "Password is required")
     @Column(nullable = false)
-    val password: String
+    val password: String,
+
+    val deleted: Boolean = false
 )

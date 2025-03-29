@@ -31,7 +31,7 @@ class UserService(
 
     @Transactional(readOnly = true)
     fun getAllUsers(): List<UserDto> {
-        return userRepository.findAll().map { it.toDto() }
+        return userRepository.findAllByDeletedFalse().map { it.toDto() }
     }
 
     @Transactional(readOnly = true)
@@ -86,7 +86,7 @@ class UserService(
             throw RuntimeException("Password does not match")
         }
 
-        userRepository.delete(user)
+        userRepository.softDeleteByEmail(email)
 
         logger.info { "User deleted successfully: ${user.email}" }
 

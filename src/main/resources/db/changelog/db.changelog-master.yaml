@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 2
+      id: 3
       author: wook3024
 #      preConditions:
 #        onFail: CONTINUE
@@ -13,8 +13,6 @@ databaseChangeLog:
             tableName: users
             columns:
               - column:
-                  name: password
-                  type: varchar(255)
-                  defaultValue: '$2a$10$lllllllllllllllllllllllllllllllllllllllllllllllllllll'
-                  constraints:
-                    nullable: false
+                  name: deleted
+                  type: bool
+                  defaultValue: false
