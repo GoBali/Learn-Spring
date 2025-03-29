@@ -73,7 +73,7 @@
     <h2>로그인</h2>
 
     <div th:if="${param.error}" class="error-message">
-        아이디 또는 비밀번호가 올바르지 않습니다.
+        이메일 또는 비밀번호가 올바르지 않습니다.
     </div>
 
     <div th:if="${param.logout}" class="error-message" style="color: #4caf50;">
@@ -82,8 +82,8 @@
 
     <form id="loginForm">
         <div class="form-group">
-            <label for="username">사용자명</label>
-            <input type="text" id="username" name="username" required autofocus>
+            <label for="email">이메일</label>
+            <input type="text" id="email" name="email" required autofocus>
         </div>
 
         <div class="form-group">
@@ -99,7 +99,7 @@
     document.getElementById('loginForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
         fetch('/api/auth/login', {
@@ -108,7 +108,7 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: username,
+                email: email,
                 password: password
             })
         })
@@ -126,13 +126,13 @@
                 if (!errorElement) {
                     const newErrorElement = document.createElement('div');
                     newErrorElement.classList.add('error-message');
-                    newErrorElement.textContent = '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.';
+                    newErrorElement.textContent = '로그인에 실패했습니다. 이메일와 비밀번호를 확인해주세요.';
                     document.querySelector('.login-container').insertBefore(
                         newErrorElement,
                         document.getElementById('loginForm')
                     );
                 } else {
-                    errorElement.textContent = '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.';
+                    errorElement.textContent = '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.';
                 }
             });
     });

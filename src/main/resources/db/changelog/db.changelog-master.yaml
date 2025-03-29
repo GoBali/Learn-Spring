@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: 2
       author: wook3024
 #      preConditions:
 #        onFail: CONTINUE
@@ -9,7 +9,12 @@ databaseChangeLog:
 #            tableName: users
 #            schemaName: public
       changes:
-        - addUniqueConstraint:
+        - addColumn:
             tableName: users
-            columnNames: email
-            constraintName: uk_users_email
+            columns:
+              - column:
+                  name: password
+                  type: varchar(255)
+                  defaultValue: '$2a$10$lllllllllllllllllllllllllllllllllllllllllllllllllllll'
+                  constraints:
+                    nullable: false

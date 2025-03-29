@@ -1,5 +1,6 @@
 package org.example.learnspring.utility
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.security.MessageDigest
 import java.util.Base64
@@ -8,10 +9,11 @@ import javax.crypto.spec.SecretKeySpec
 
 @Component
 class EncryptionUtility(
-    private val secretKey: String = System.getenv("APP_SECRET_KEY") ?: "DefaultKey-NeedChangeInProduction"
+    @Value("\${jasypt.encryptor.password}")
+    private val secretKey: String
 ) {
     init {
-        require(secretKey.length >= 16) { "비밀키는 최소 16자 이상이어야 합니다" }
+        require(secretKey.length >= 16) { "Secret key must be at least 16 characters long" }
     }
 
     // AES 암호화

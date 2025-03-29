@@ -22,7 +22,6 @@ class TestControllerTest {
         mockMvc.get("/api/hello")
             .andExpect {
                 status { isOk() }
-//                content { string("Hello, Kotlin Spring Web Server!") }
             }
     }
 }

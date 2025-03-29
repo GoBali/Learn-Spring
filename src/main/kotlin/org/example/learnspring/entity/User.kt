@@ -20,4 +20,8 @@ data class User(
     @field:Email(message = "Invalid email format")
     @Column(unique = true, nullable = false)
     val email: String,
+
+    @field:NotBlank(message = "Password is required")
+    @Column(nullable = false)
+    val password: String
 )

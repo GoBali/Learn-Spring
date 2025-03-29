@@ -82,12 +82,9 @@ logging:
 # 암호화 설정
 jasypt:
   encryptor:
-    password: learn-spring-encryption-key
+    password: learn-spring-encryption-key-=a2V5X3ZhbHVlX3RoYXRfaXNfYXRfbGVhc3RfMjU2X2JpdHNfbG9uZ19mb3JfaHMyNTZfYWxnb3JpdGht
     algorithm: PBEWithHMACSHA512AndAES_256
     iv-generator-classname: org.jasypt.iv.RandomIvGenerator
-
-encryption:
-  key: learn-spring-secure-data
 
 # JWT 설정
 jwt:

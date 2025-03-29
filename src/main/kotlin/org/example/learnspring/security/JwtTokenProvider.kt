@@ -30,8 +30,8 @@ class JwtTokenProvider {
     @Value("\${jwt.expiration}")
     private var validityInMilliseconds: Long = 3600000
 
-    fun createToken(username: String, roles: List<String>): String {
-        val claims: Claims = Jwts.claims().setSubject(username)
+    fun createToken(email: String, roles: List<String>): String {
+        val claims: Claims = Jwts.claims().setSubject(email)
         claims["roles"] = roles
 
         val now = Date()
@@ -69,10 +69,10 @@ class JwtTokenProvider {
         }
     }
 
-    fun getUsername(token: String): String {
-        return jwtParser
-            .parseClaimsJws(token)
-            .body
-            .subject
-    }
+//    fun getEmail(token: String): String {
+//        return jwtParser
+//            .parseClaimsJws(token)
+//            .body
+//            .subject
+//    }
 }

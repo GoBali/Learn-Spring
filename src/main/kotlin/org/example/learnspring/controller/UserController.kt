@@ -1,6 +1,8 @@
 package org.example.learnspring.controller
 
-import org.example.learnspring.dto.UserDto
+import org.example.learnspring.dto.CreateUserRequest
+import org.example.learnspring.dto.DeleteUserRequest
+import org.example.learnspring.dto.UpdateUserRequest
 import org.example.learnspring.service.UserService
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.ResponseEntity
@@ -17,14 +19,14 @@ class UserController(private val userService: UserService) {
         ResponseEntity.ok(userService.getUserById(id))
 
     @PostMapping
-    fun createUser(@RequestBody userDto: UserDto) =
-        ResponseEntity.ok(userService.createUser(userDto))
+    fun createUser(@RequestBody createUserRequest: CreateUserRequest) =
+        ResponseEntity.ok(userService.createUser(createUserRequest))
 
     @PutMapping("/{email}")
-    fun updateUser(@PathVariable email: String, @RequestBody userDto: UserDto) =
-        ResponseEntity.ok(userService.updateUser(email, userDto))
+    fun updateUser(@PathVariable email: String, @RequestBody updateUserRequest: UpdateUserRequest) =
+        ResponseEntity.ok(userService.updateUser(email, updateUserRequest))
 
     @DeleteMapping("/{email}")
-    fun deleteUser(@PathVariable email: String) =
-        ResponseEntity.ok(userService.deleteUser(email))
+    fun deleteUser(@PathVariable email: String, deleteUserRequest: DeleteUserRequest) =
+        ResponseEntity.ok(userService.deleteUser(email, deleteUserRequest))
 }
