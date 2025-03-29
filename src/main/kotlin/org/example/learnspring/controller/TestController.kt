@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api")
-class HelloController(
+class TestController(
     private val encryptionUtility: EncryptionUtility
 ) {
     private val logger = KotlinLogging.logger {}

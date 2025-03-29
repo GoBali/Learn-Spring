@@ -1,7 +1,7 @@
 package org.example.learnspring
 
 import org.junit.jupiter.api.Test
-import org.example.learnspring.controller.HelloController
+import org.example.learnspring.controller.TestController
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -10,10 +10,10 @@ import org.springframework.test.web.servlet.get
 
 
 @WebMvcTest(
-    controllers = [HelloController::class],
+    controllers = [TestController::class],
     excludeAutoConfiguration = [SecurityAutoConfiguration::class]
 )
-class HelloControllerTest {
+class TestControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 

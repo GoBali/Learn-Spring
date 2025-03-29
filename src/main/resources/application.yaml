@@ -3,21 +3,8 @@ spring:
     name: learn-spring
   profiles:
     active: dev
-  thymeleaf:
-    cache: false  # 개발 환경에서는 캐시 비활성화
-    prefix: classpath:/templates/
-    suffix: .html
-    mode: HTML
-    encoding: UTF-8
-  docker:
-    compose:
-      enabled: false
-  liquibase:
-    enabled: true
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
-  output:
-    ansi:
-      enabled: never
+
+  # 데이터베이스 설정
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/learn-spring}
     username: ${SPRING_DATASOURCE_USERNAME:user}
@@ -25,16 +12,17 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
     hikari:
-      connection-timeout: 30000       # 30초 (기본값과 동일)
-      pool-name: LearnSpringHikariCP  # 기존 설정 유지
-      maximum-pool-size: 10          # 기존 설정 유지
-      minimum-idle: 5                # 최소 유휴 연결 수 설정
-      idle-timeout: 600000          # 10분 (유휴 연결 제거 시간)
-      max-lifetime: 1800000        # 30분 (연결 최대 수명)
-      auto-commit: true            # 자동 커밋 설정
-      connection-test-query: SELECT 1  # 연결 유효성 검사 쿼리
-      leak-detection-threshold: 60000  # 1분 (연결 누수 탐지 임계값)
+      connection-timeout: 30000
+      pool-name: LearnSpringHikariCP
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      auto-commit: true
+      connection-test-query: SELECT 1
+      leak-detection-threshold: 60000
 
+  # JPA 설정
   jpa:
     hibernate:
       ddl-auto: update
@@ -44,6 +32,31 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
+
+  # Spring Data REST 설정
+  data:
+    rest:
+      base-path: /api/data-rest
+      detection-strategy: ANNOTATED  # ANNOTATED로 설정하여 @RepositoryRestResource 어노테이션이 있는 Repository만 REST API로 노출
+
+  # Thymeleaf 설정
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+
+  # 기타 Spring 설정
+  docker:
+    compose:
+      enabled: false
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+  output:
+    ansi:
+      enabled: never
   security:
     filter:
       jwt.enabled: ${SPRING_SECURITY_FILTER_JWT_ENABLED:false}
@@ -51,6 +64,7 @@ spring:
       name: admin
       password: admin
 
+# 서버 설정
 server:
   port: 8443
   ssl:
@@ -59,39 +73,42 @@ server:
     key-store-password: changeit
     key-store-type: PKCS12
 
+# 로깅 설정
 logging:
   level:
     com.zaxxer.hikari: DEBUG
     org.springframework.cache: DEBUG
 
+# 암호화 설정
 jasypt:
   encryptor:
     password: learn-spring-encryption-key
     algorithm: PBEWithHMACSHA512AndAES_256
     iv-generator-classname: org.jasypt.iv.RandomIvGenerator
 
+encryption:
+  key: learn-spring-secure-data
+
+# JWT 설정
 jwt:
   secret: =a2V5X3ZhbHVlX3RoYXRfaXNfYXRfbGVhc3RfMjU2X2JpdHNfbG9uZ19mb3JfaHMyNTZfYWxnb3JpdGht
   expiration: 3600000
 
+# 모니터링 및 추적 설정
 management:
   tracing:
     sampling:
       probability: 1.0
     enabled: true
-
   zipkin:
     tracing:
       endpoint: http://zipkin-tracer:9411/api/v2/spans
 
-encryption:
-  key: learn-spring-secure-data
-
+# API 문서 설정
 springdoc:
   api-docs:
     enabled: true
     path: /api-docs
-
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
