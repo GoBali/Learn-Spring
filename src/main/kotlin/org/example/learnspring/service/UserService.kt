@@ -1,5 +1,6 @@
 package org.example.learnspring.service
 
+import io.micrometer.tracing.Tracer
 import mu.KotlinLogging
 import org.example.learnspring.dto.CreateUserRequest
 import org.example.learnspring.dto.DeleteUserRequest
@@ -7,6 +8,7 @@ import org.example.learnspring.dto.UpdateUserRequest
 import org.example.learnspring.dto.UserDto
 import org.example.learnspring.entity.User
 import org.example.learnspring.repository.UserRepository
+import org.example.learnspring.utility.withSpan
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
 import org.springframework.cache.annotation.Cacheable
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val tracer: Tracer
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -78,19 +81,35 @@ class UserService(
     @Transactional
     @CacheEvict(value = ["user"], key = "#email")
     fun deleteUser(email: String, deleteUserRequest: DeleteUserRequest): Map<String, String> {
-        val user = userRepository.findByEmail(email)
-            .orElseThrow { RuntimeException("User not found by Email: ${email}") }
+        return tracer.withSpan("delete user") { span ->
+            val user = tracer.withSpan(span, "find user") { userSpan ->
+                userSpan.tag("user.email", email)
+                userRepository.findByEmail(email).orElseThrow {
+                    RuntimeException("User not found by Email: $email").also {
+                        userSpan.tag("error", it.message ?: "Unknown error")
+                    }
+                }
+            }
 
-        if (!validatePassword(deleteUserRequest.password, user.password))
-        {
-            throw RuntimeException("Password does not match")
+            tracer.withSpan(span, "validate password") { pwdSpan ->
+                val isValid = validatePassword(deleteUserRequest.password, user.password)
+                if (!isValid) {
+                    val exception = RuntimeException("Password does not match")
+                    pwdSpan.tag("error", exception.message ?: "Validation failed")
+                    throw exception
+                }
+            }
+
+            tracer.withSpan(span, "soft delete") { deleteSpan ->
+                userRepository.softDeleteByEmail(email)
+                deleteSpan.tag("user.email", email)
+            }
+
+            tracer.withSpan(span, "logging") { logSpan ->
+                logger.info { "User deleted successfully: ${user.email}" }
+            }
+            mapOf("message" to "User deleted successfully", "email" to email)
         }
-
-        userRepository.softDeleteByEmail(email)
-
-        logger.info { "User deleted successfully: ${user.email}" }
-
-        return mapOf("message" to "User deleted successfully", "email" to email)
     }
 
     private fun User.toDto(): UserDto = UserDto(

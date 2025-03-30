@@ -68,6 +68,26 @@ class GlobalExceptionHandler {
         return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
     }
 
+    @ExceptionHandler(UserNotFoundException::class)
+    fun handleUserNotFoundException(ex: UserNotFoundException):
+            ResponseEntity<ErrorResponseDto> {
+        val errorResponse = ErrorResponseDto(
+            errorCode = "USER_NOT_FOUND",
+            error = ex.message ?: "User not found."
+        )
+        return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
+    }
+
+    @ExceptionHandler(UserInfoDoesNotMatchException::class)
+    fun handleUserInfoDoesNotMatchException(ex: UserInfoDoesNotMatchException):
+            ResponseEntity<ErrorResponseDto> {
+        val errorResponse = ErrorResponseDto(
+            errorCode = "USER_INFO_DOES_NOT_MATCH",
+            error = ex.message ?: "User info does not match."
+        )
+        return ResponseEntity(errorResponse, HttpStatus.UNAUTHORIZED)
+    }
+
     @ExceptionHandler(FileUploadException::class)
     fun handleFileUploadException(ex: FileUploadException):
             ResponseEntity<ErrorResponseDto> {
@@ -80,6 +100,8 @@ class GlobalExceptionHandler {
 }
 
 class UserNotFoundException(message: String) : RuntimeException(message)
+
+class UserInfoDoesNotMatchException(message: String) : RuntimeException(message)
 
 class AuthenticationException(message: String) : RuntimeException(message)
 

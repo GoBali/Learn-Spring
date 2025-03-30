@@ -20,6 +20,7 @@ services:
       JAVA_OPTS: "-XX:+UseContainerSupport -Xms256m -Xmx512m"
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
       SPRING_SECURITY_FILTER_JWT_ENABLED: "true"
+      TRACING_ENDPOINT: http://zipkin-tracer:9411/api/v2/spans
     depends_on:
       - database
     networks:

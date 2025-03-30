@@ -55,6 +55,9 @@ dependencies {
 	implementation("io.micrometer:micrometer-core")
 	implementation("io.micrometer:micrometer-registry-prometheus")
 	implementation("io.github.microutils:kotlin-logging:1.12.5")
+	implementation("io.micrometer:micrometer-tracing-bridge-brave")
+	implementation("io.zipkin.reporter2:zipkin-reporter-brave")
+	implementation("io.netty:netty-resolver-dns-native-macos:4.1.111.Final:osx-aarch_64") // No required
 
 	// Thymeleaf 의존성
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")

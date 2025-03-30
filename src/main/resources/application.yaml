@@ -78,6 +78,11 @@ logging:
   level:
     com.zaxxer.hikari: DEBUG
     org.springframework.cache: DEBUG
+    org.springframework.boot.actuate: DEBUG
+    org.springframework.web.client.RestTemplate: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.cloud.sleuth: DEBUG
+    org.springframework.boot.autoconfigure.web.servlet.error: DEBUG
 
 # 암호화 설정
 jasypt:
@@ -96,7 +101,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus, health, info
+        include: prometheus, health, info, tracing
   endpoint:
     prometheus:
       access: read_only
@@ -106,7 +111,7 @@ management:
     enabled: true
   zipkin:
     tracing:
-      endpoint: http://zipkin-tracer:9411/api/v2/spans
+      endpoint: ${TRACING_ENDPOINT:http://localhost:9411/api/v2/spans}
 
 # API 문서 설정
 springdoc:
