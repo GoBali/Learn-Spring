@@ -78,9 +78,15 @@ export function generateUserData(): UserData {
     const datePrefix = getFormattedDate();
     const uuidSuffix = uuidv4().substring(0, 8);
 
+    const originalEmail = generateRealisticEmail();
+    const username = originalEmail.split('@')[0];
+    const emailDomain = originalEmail.split('@')[1];
+
+    const email = `${datePrefix}-${username}-${uuidSuffix}@${emailDomain}`;
+
     return {
-        name: `Test User ${datePrefix}-${uuidSuffix}`,
-        email: generateRealisticEmail(),
+        name: username,
+        email: email,
         password: `Pw${randomString(8)}!${Math.floor(Math.random() * 100)}`,
     };
 }

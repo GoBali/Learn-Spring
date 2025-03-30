@@ -46,6 +46,18 @@ services:
     networks:
       - spring-network
 
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://user:password@springboot-db:5432/learn-spring?sslmode=disable"
+    ports:
+      - "9187:9187"
+    networks:
+      - spring-network
+    depends_on:
+      - database
+
   tracer:
     image: openzipkin/zipkin:latest
     container_name: zipkin-tracer

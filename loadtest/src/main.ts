@@ -15,10 +15,10 @@ const env: Environment = {
 
 export const options: Options = {
     stages: [
-        { duration: '30s', target: 100 },  // 램프업 단계
-        { duration: '1m', target: 100 },  // 지속 단계
-        { duration: '1m', target: 200 },  // 부하 증가
-        { duration: '1m', target: 200 },  // 고부하 지속
+        { duration: '30s', target: 10 },  // 램프업 단계
+        { duration: '1m', target: 10 },  // 지속 단계
+        { duration: '1m', target: 50 },  // 부하 증가
+        { duration: '1m', target: 50 },  // 고부하 지속
         { duration: '1m', target: 0 },    // 단계적 감소
     ],
     // stages: [
