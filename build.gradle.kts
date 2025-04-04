@@ -5,15 +5,37 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.7"
 	id("com.netflix.dgs.codegen") version "7.0.3"
 	id("org.graalvm.buildtools.native") version "0.10.5"
-	id("org.jetbrains.kotlin.plugin.jpa") version "1.8.0"
+	id("org.jetbrains.kotlin.plugin.jpa") version "1.9.25"
 }
 
 group = "org.example"
 version = "0.0.1-SNAPSHOT"
+val javaVersion = 21
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion.set(JavaLanguageVersion.of(javaVersion))
+	}
+}
+
+kotlin {
+	jvmToolchain(javaVersion)
+	compilerOptions {
+		freeCompilerArgs.addAll("-Xjsr305=strict")
+	}
+}
+
+
+graalvmNative {
+	binaries {
+		named("main") {
+			javaLauncher.set(javaToolchains.launcherFor {
+				languageVersion.set(JavaLanguageVersion.of(21))
+			})
+
+			buildArgs.add("--no-fallback")
+			buildArgs.add("-H:+ReportExceptionStackTraces")
+		}
 	}
 }
 
