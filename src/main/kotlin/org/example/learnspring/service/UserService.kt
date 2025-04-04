@@ -15,6 +15,7 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class UserService(
@@ -101,7 +102,8 @@ class UserService(
             }
 
             tracer.withSpan(span, "soft delete") { deleteSpan ->
-                userRepository.softDeleteByEmail(email)
+                val deletionTime = LocalDateTime.now()
+                userRepository.softDeleteByEmail(email, deletionTime)
                 deleteSpan.tag("user.email", email)
             }
 

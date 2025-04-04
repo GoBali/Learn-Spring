@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "users")
@@ -22,9 +24,14 @@ data class User(
     val email: String,
 
     @field:NotBlank(message = "Password is required")
+    @field:Size(min = 8, message = "Password must be at least 8 characters long")
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     val password: String,
 
     @Column(nullable = false)
-    val deleted: Boolean = false
+    val deleted: Boolean = false,
+
+    @Column(name = "deleted_at", nullable = true)
+    val deletedAt: LocalDateTime? = null
 )

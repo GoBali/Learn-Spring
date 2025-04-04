@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 3
+      id: 4
       author: wook3024
 #      preConditions:
 #        onFail: CONTINUE
@@ -13,6 +13,7 @@ databaseChangeLog:
             tableName: users
             columns:
               - column:
-                  name: deleted
-                  type: bool
-                  defaultValue: false
+                  name: deleted_at
+                  type: timestamp
+                  constraints:
+                    nullable: true
