@@ -101,6 +101,8 @@ dependencies {
 	// 테스트 의존성
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("io.mockk:mockk:1.13.11")
+	testImplementation("org.mockito:mockito-core:5.12.0")
 }
 
 kotlin {
