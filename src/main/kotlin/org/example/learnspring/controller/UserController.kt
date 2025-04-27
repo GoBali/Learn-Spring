@@ -27,6 +27,6 @@ class UserController(private val userService: UserService) {
         ResponseEntity.ok(userService.updateUser(email, updateUserRequest))
 
     @DeleteMapping("/{email}")
-    fun deleteUser(@PathVariable email: String, deleteUserRequest: DeleteUserRequest) =
+    fun deleteUser(@PathVariable email: String, @RequestBody deleteUserRequest: DeleteUserRequest) =
         ResponseEntity.ok(userService.deleteUser(email, deleteUserRequest))
 }
